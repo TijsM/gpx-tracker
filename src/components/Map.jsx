@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import ReactMapGl from "react-map-gl";
 import { Plugins } from "@capacitor/core";
 
+import UserLocation from "./UserLocation";
+
 export default function Map() {
   const { Geolocation } = Plugins;
 
   const [viewport, setViewport] = useState({
-    longitude: 45,
-    latitude: 45,
+    longitude: 0,
+    latitude: 0,
     zoom: 17,
   });
   const [hasPosition, setHasPosition] = useState(false);
@@ -15,7 +17,7 @@ export default function Map() {
   useEffect(() => {
     const startWatchLocation = async () => {
       Geolocation.watchPosition({}, (locationData) => {
-        console.log("updated locaiton", locationData);
+        console.log("updated location", locationData);
         if (locationData) {
           setHasPosition(true);
           const oldVp = { ...viewport };
@@ -38,7 +40,14 @@ export default function Map() {
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
       onViewportChange={(vp) => setViewport(vp)}
     >
-      {hasPosition ? "location found" : "fetching location"}
+      {hasPosition ? (
+        <UserLocation
+          latitude={viewport.latitude}
+          longitude={viewport.longitude}
+        />
+      ) : (
+        "fetching location"
+      )}
     </ReactMapGl>
   );
 }
