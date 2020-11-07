@@ -8,25 +8,27 @@ export default function Map() {
   const [viewport, setViewport] = useState({
     longitude: 45,
     latitude: 45,
-    zoom: 18,
+    zoom: 17,
   });
+  const [hasPosition, setHasPosition] = useState(false);
 
   useEffect(() => {
-    const getCurrentPosition = async () => {
-      const coordinates = await Geolocation.getCurrentPosition();
-      console.log("latitude", coordinates.coords.latitude);
-      console.log("longitude", coordinates.coords.longitude);
+    const startWatchLocation = async () => {
+      Geolocation.watchPosition({}, (locationData) => {
+        console.log("updated locaiton", locationData);
+        if (locationData) {
+          setHasPosition(true);
+          const oldVp = { ...viewport };
+          oldVp.longitude = locationData.coords.longitude;
+          oldVp.latitude = locationData.coords.latitude;
 
-      const oldVp = {...viewport}
-      oldVp.longitude = coordinates.coords.longitude
-      oldVp.latitude = coordinates.coords.latitude
-
-      setViewport({...oldVp})
+          setViewport({ ...oldVp });
+        }
+      });
     };
 
-    getCurrentPosition()
-
-  }, [Geolocation]);
+    startWatchLocation();
+  }, []);
 
   return (
     <ReactMapGl
@@ -36,7 +38,7 @@ export default function Map() {
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
       onViewportChange={(vp) => setViewport(vp)}
     >
-      lines here
+      {hasPosition ? "location found" : "fetching location"}
     </ReactMapGl>
   );
 }
