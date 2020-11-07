@@ -12,24 +12,43 @@ export default function Map() {
     latitude: 0,
     zoom: 17,
   });
+  const [userLocation, setUserLocation] = useState();
   const [hasPosition, setHasPosition] = useState(false);
 
+  //update user location
   useEffect(() => {
     const startWatchLocation = async () => {
       Geolocation.watchPosition({}, (locationData) => {
         console.log("updated location", locationData);
         if (locationData) {
           setHasPosition(true);
-          const oldVp = { ...viewport };
+          const oldVp = { ...userLocation };
           oldVp.longitude = locationData.coords.longitude;
           oldVp.latitude = locationData.coords.latitude;
-
-          setViewport({ ...oldVp });
+          setUserLocation(oldVp);
         }
       });
     };
 
     startWatchLocation();
+  }, []);
+
+
+ // set the initial vieuwport
+  useEffect(() => {
+    const getCurrentPosition = async () => {
+      const coordinates = await Geolocation.getCurrentPosition();
+      console.log("latitude", coordinates.coords.latitude);
+      console.log("longitude", coordinates.coords.longitude);
+
+      const oldVp = { ...viewport };
+      oldVp.longitude = coordinates.coords.longitude;
+      oldVp.latitude = coordinates.coords.latitude;
+
+      setViewport({ ...oldVp });
+    };
+
+    getCurrentPosition();
   }, []);
 
   return (
@@ -40,10 +59,10 @@ export default function Map() {
       mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
       onViewportChange={(vp) => setViewport(vp)}
     >
-      {hasPosition ? (
+      {hasPosition && userLocation ? (
         <UserLocation
-          latitude={viewport.latitude}
-          longitude={viewport.longitude}
+          latitude={userLocation.latitude}
+          longitude={userLocation.longitude}
         />
       ) : (
         "fetching location"

@@ -14,8 +14,6 @@ export default function UserLocation({ longitude, latitude }) {
     <Marker
       latitude={latitude}
       longitude={longitude}
-    //   offsetLeft={-20}
-    //   offsetTop={-10}
     >
       <LocationIndicator/>
     </Marker>
