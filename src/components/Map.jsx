@@ -3,6 +3,7 @@ import ReactMapGl from "react-map-gl";
 import { Plugins } from "@capacitor/core";
 
 import UserLocation from "./UserLocation";
+import Track from './Track'
 
 export default function Map() {
   const { Geolocation } = Plugins;
@@ -64,9 +65,11 @@ export default function Map() {
           latitude={userLocation.latitude}
           longitude={userLocation.longitude}
         />
+
       ) : (
         "fetching location"
       )}
+      <Track/>
     </ReactMapGl>
   );
 }
