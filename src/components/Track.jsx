@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Marker } from "react-map-gl";
-import styled from "styled-components";
-
-const TrackItem = styled.div`
-  width: 10px;
-  height: 10px;
-  background-color: blue;
-  border-radius: 10px;
-`;
+import { Layer, Source } from "react-map-gl";
 
 export default function UserLocation() {
-  const [gpxTrack, setGpxTrack] = useState();
+  const [gpxData, setGpxData] = useState();
+  const [trackCoords, setTrackCoords] = useState();
 
   useEffect(() => {
-    console.log(process.env.REACT_APP_BACKEND_ENDPOINT);
     const fetchData = async () => {
       const response = await fetch(
         process.env.REACT_APP_BACKEND_ENDPOINT + "/getTestRoute"
@@ -21,30 +13,51 @@ export default function UserLocation() {
       const data = await response.json();
 
       if (data.gpx.trk) {
-        setGpxTrack(data.gpx.trk);
+        setGpxData(data.gpx.trk);
       }
     };
 
     fetchData();
   }, []);
 
-  // console.log("track", gpxTrack)
+  useEffect(() => {
+    if (gpxData) {
+      const coords = gpxData.trkseg.trkpt.map((el) => {
+        const lat = parseFloat(el.lat, 10);
+        const lon = parseFloat(el.lon, 10);
+        return [lon, lat];
+      });
 
-  if (!gpxTrack) {
+      setTrackCoords({
+        type: "Feature",
+        geometry: {
+          type: "LineString",
+          coordinates: coords,
+        },
+      });
+    }
+  }, [gpxData]);
+
+  if (!gpxData) {
     return <div>loading</div>;
   }
 
   return (
     <div>
-      {gpxTrack.trkseg.trkpt.map((element) => {
-        const lat = parseFloat(element.lat, 10, )
-        const lon = parseFloat(element.lon, 10)
-        return (
-          <Marker key={lat*lon} latitude={lat} longitude={lon}>
-            <TrackItem />
-          </Marker>
-        );
-      })}
+      {trackCoords && <Source id="route" type="geojson" data={trackCoords} />}
+      <Layer
+        id="route"
+        type="line"
+        source="route"
+        layout={{
+          "line-join": "round",
+          "line-cap": "round",
+        }}
+        paint={{
+          "line-color": "#15ff00",
+          "line-width": 8,
+        }}
+      />
     </div>
   );
 }
