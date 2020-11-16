@@ -1,7 +1,8 @@
-import Map from "./pages/Map";
+import Router from './Router'
+
 
 function App() {
-  return <Map></Map>;
+  return <Router/>
 }
 
 export default App;
