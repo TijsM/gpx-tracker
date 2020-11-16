@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import ReactMapGl from "react-map-gl";
 import { Plugins } from "@capacitor/core";
 
-import UserLocation from "./UserLocation";
-import Track from './Track'
+import UserLocation from "../components/UserLocation";
+import Track from '../components/Track'
 
 export default function Map() {
   const { Geolocation } = Plugins;

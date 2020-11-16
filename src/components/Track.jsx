@@ -55,7 +55,7 @@ export default function UserLocation() {
         }}
         paint={{
           "line-color": "#15ff00",
-          "line-width": 8,
+          "line-width": 6,
         }}
       />
     </div>
