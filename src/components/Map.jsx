@@ -3,6 +3,7 @@ import ReactMapGl from "react-map-gl";
 import { Plugins } from "@capacitor/core";
 
 import UserLocation from "./UserLocation";
+import Track from './Track'
 
 export default function Map() {
   const { Geolocation } = Plugins;
@@ -18,9 +19,10 @@ export default function Map() {
   //update user location
   useEffect(() => {
     const startWatchLocation = async () => {
-      Geolocation.watchPosition({}, (locationData) => {
+      Geolocation.watchPosition({enableHighAccuracy: true}, (locationData) => {
         console.log("updated location", locationData);
         if (locationData) {
+          console.log('locationData', locationData)
           setHasPosition(true);
           const oldVp = { ...userLocation };
           oldVp.longitude = locationData.coords.longitude;
@@ -38,8 +40,6 @@ export default function Map() {
   useEffect(() => {
     const getCurrentPosition = async () => {
       const coordinates = await Geolocation.getCurrentPosition();
-      console.log("latitude", coordinates.coords.latitude);
-      console.log("longitude", coordinates.coords.longitude);
 
       const oldVp = { ...viewport };
       oldVp.longitude = coordinates.coords.longitude;
@@ -64,9 +64,11 @@ export default function Map() {
           latitude={userLocation.latitude}
           longitude={userLocation.longitude}
         />
+
       ) : (
         "fetching location"
       )}
+      <Track/>
     </ReactMapGl>
   );
 }
