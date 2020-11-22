@@ -7,17 +7,19 @@ export default function FileUpload() {
     setFile(event.target.files[0]);
   };
 
-  const uploadFile = () => {
+  const uploadFile = async () => {
     const url = process.env.REACT_APP_BACKEND_ENDPOINT + "/uploadRoute";
 
     const formData = new FormData();
     formData.append("gpx", file);
 
-    fetch(url, {
+    const res = await fetch(url, {
       method: "POST",
       headers: {},
       body: formData,
     });
+
+    console.log('res', await res.json())
   };
 
   return (
