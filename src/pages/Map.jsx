@@ -19,7 +19,7 @@ export default function Map() {
   //update user location
   useEffect(() => {
     const startWatchLocation = async () => {
-      Geolocation.watchPosition({enableHighAccuracy: true}, (locationData) => {
+      Geolocation.watchPosition({enableHighAccuracy: false}, (locationData) => {
         console.log("updated location", locationData);
         if (locationData) {
           console.log('locationData', locationData)
@@ -33,13 +33,13 @@ export default function Map() {
     };
 
     startWatchLocation();
-  }, []);
+  }, [Geolocation, userLocation]);
 
 
  // set the initial vieuwport
   useEffect(() => {
     const getCurrentPosition = async () => {
-      const coordinates = await Geolocation.getCurrentPosition();
+      const coordinates = await Geolocation.getCurrentPosition({enableHighAccuracy: true});
 
       const oldVp = { ...viewport };
       oldVp.longitude = coordinates.coords.longitude;
@@ -49,7 +49,7 @@ export default function Map() {
     };
 
     getCurrentPosition();
-  }, []);
+  }, [Geolocation, viewport]);
 
   return (
     <ReactMapGl
