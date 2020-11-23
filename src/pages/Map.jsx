@@ -20,9 +20,7 @@ export default function Map() {
   useEffect(() => {
     const startWatchLocation = async () => {
       Geolocation.watchPosition({enableHighAccuracy: false}, (locationData) => {
-        console.log("updated location", locationData);
         if (locationData) {
-          console.log('locationData', locationData)
           setHasPosition(true);
           const oldVp = { ...userLocation };
           oldVp.longitude = locationData.coords.longitude;

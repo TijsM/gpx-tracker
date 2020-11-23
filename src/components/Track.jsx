@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Layer, Source } from "react-map-gl";
+import { useLocation } from "react-router-dom";
 
 export default function UserLocation() {
   const [gpxData, setGpxData] = useState();
   const [trackCoords, setTrackCoords] = useState();
 
+  const location = useLocation();
+  const route = location?.state?.route;
+
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRandomRoute = async () => {
       const response = await fetch(
         process.env.REACT_APP_BACKEND_ENDPOINT + "/getTestRoute"
       );
@@ -17,8 +21,12 @@ export default function UserLocation() {
       }
     };
 
-    fetchData();
-  }, []);
+    if (route) {
+      setGpxData(route.gpx.trk);
+    } else {
+      fetchRandomRoute();
+    }
+  }, [route]);
 
   useEffect(() => {
     if (gpxData) {

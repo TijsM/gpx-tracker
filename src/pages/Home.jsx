@@ -2,7 +2,8 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
-import FileUpload from "../components/FileUpload"
+import FileUpload from "../components/FileUpload";
+import SearchRoute from "../components/SearchRoute";
 
 const Button = styled.button`
   padding: 10px;
@@ -19,7 +20,8 @@ export default function Home() {
       <ButtonContainer>
         <Button onClick={() => history.push("/map")}>go to nav</Button>
       </ButtonContainer>
-      <FileUpload/>
+      <FileUpload />
+      <SearchRoute />
     </div>
   );
 }

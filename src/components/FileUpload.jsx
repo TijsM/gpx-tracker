@@ -13,13 +13,11 @@ export default function FileUpload() {
     const formData = new FormData();
     formData.append("gpx", file);
 
-    const res = await fetch(url, {
+    await fetch(url, {
       method: "POST",
       headers: {},
       body: formData,
     });
-
-    console.log('res', await res.json())
   };
 
   return (
